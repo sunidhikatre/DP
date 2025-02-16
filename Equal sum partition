@@ -1,0 +1,43 @@
+The function canPartition checks if an array can be partitioned into two subsets with equal sums.
+It first calculates the total sum of the array; if it's odd, partitioning is impossible.
+It then uses memoized recursion (isSubsetSum) to determine if a subset with sum sum/2 exists.
+The isSubsetSum function applies the 0/1 Knapsack approach, storing results in a Boolean DP table to avoid redundant calculations.
+The function returns true if a valid subset exists, otherwise false.
+
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for(int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+        }
+        int n = nums.length;
+        if(sum %2 != 0) {
+            return false;
+        }
+        Boolean[][] t = new Boolean[n+1][sum+1];
+        boolean found = isSubsetSum(nums, sum/2, n, t);
+        return found;
+    }
+
+    public boolean isSubsetSum(int[] nums, int sum, int n, Boolean[][] t) {
+        if(sum == 0) {
+            return true;
+        }
+        if(n == 0) {
+            return false;
+        }
+
+        if(t[n][sum] != null){
+            return t[n][sum];
+        }
+
+        if(nums[n-1] <= sum) {
+            t[n][sum] = isSubsetSum(nums, sum - nums[n-1], n - 1 ,t) ||
+                 isSubsetSum(nums, sum, n - 1 ,t);
+        } else {
+            t[n][sum] = isSubsetSum(nums, sum, n - 1 ,t);
+        }
+
+        return t[n][sum];
+    }
+}
