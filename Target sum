@@ -1,0 +1,80 @@
+### Summary of the Approach
+This problem is a variation of the **Subset Sum Count** problem. The goal is to find the number of ways to partition an array into two subsets such that the difference between their sums equals `target`.
+
+### Formula & Concept
+Let:
+- `sum` be the total sum of the array.
+- `S1` and `S2` be the sums of two subsets such that:
+  S1 - S2 = target
+  Also, we know that:
+  S1 + S2 = sum
+
+#### Derivation:
+By adding both equations:
+(S1 - S2) + (S1 + S2) = target + sum
+2S1 = target + sum
+S1 = (target + sum) / 2
+
+This means we need to find the number of subsets with a sum equal to **newTarget = (target + sum) / 2**.
+
+### Edge Cases
+- If `(target + sum)` is **odd**, `S1` will not be an integer, meaning no valid partition exists → **return `0`**.
+- If `sum < abs(target)`, it's **impossible** to achieve the given difference → **return `0`**.
+
+---
+
+### Approach
+1. **Compute `sum`** of the array.
+2. **Check edge cases**:
+   - If `(target + sum) % 2 != 0`, return `0`.
+   - If `sum < abs(target)`, return `0`.
+3. **Find `newTarget = (target + sum)/2`**.
+4. **Use Memoized Recursion** (`countSubSetWithSum`) to count subsets that sum to `newTarget`.
+
+---
+
+### Time Complexity
+- **Recursive calls** with memoization: **O(N * newTarget)**
+- **Space Complexity** (DP table): **O(N * newTarget)**
+
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for(int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+        }
+
+        if((sum + target) %2 != 0 || sum < Math.abs(target)) {
+            return 0;
+        }
+        int n = nums.length;
+        int newTarget = (target + sum)/2;
+        
+        int[][] t = new int[n+1][newTarget+1];
+        for(int i = 0; i <= n; i++) {
+            for(int j = 0; j <= newTarget; j++) {
+                t[i][j] = -1;
+            }
+        }
+        int countOfSubSetWithSum = countSubSetWithSum(nums, newTarget, n, t);
+        return countOfSubSetWithSum;
+    }
+
+    public int countSubSetWithSum(int[] nums, int newTarget, int n, int[][] t) {
+        if(n == 0) {
+            return (newTarget == 0) ? 1:0;
+        }
+
+        if(t[n][newTarget] != -1) {
+            return t[n][newTarget];
+        }
+
+        if(nums[n - 1] <= newTarget) {
+            t[n][newTarget] = countSubSetWithSum(nums, newTarget - nums[n - 1] ,
+                             n -1, t) + countSubSetWithSum(nums, newTarget, n - 1, t); 
+        } else {
+            t[n][newTarget] = countSubSetWithSum(nums, newTarget, n - 1, t); 
+        }
+        return t[n][newTarget];
+    }
+}
