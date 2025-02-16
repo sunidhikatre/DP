@@ -1,0 +1,42 @@
+Input: arr[] = [5, 2, 3, 10, 6, 8], target = 10
+Output: 3
+Explanation: The subsets {5, 2, 3}, {2, 8}, and {10} sum up to the target 10.
+
+
+class Solution {
+
+    // Function to calculate the number of subsets with a given sum
+    public int perfectSum(int[] nums, int target) {
+        // code here
+        int n = nums.length;
+        int[][] t = new int[n+1][target+1];
+
+        
+        for (int i = 0; i <= n; i++) {
+            for(int j=0; j<=target; j++){
+                t[i][j] = -1;
+            }
+        }
+
+        int countOfSubset = isPerfectSum(nums, target, n, t);
+        return countOfSubset;
+    }
+    
+    public int isPerfectSum(int[] nums, int target, int n, int[][] t) {
+        if (n == 0) {
+         return (target == 0) ? 1 : 0;
+        }
+
+        
+        if(t[n][target] != -1) {
+            return t[n][target];
+        }
+        if(nums[n-1] <= target) {
+            t[n][target] = isPerfectSum(nums, target-nums[n-1], n-1, t) +
+            isPerfectSum(nums, target, n-1, t);
+        } else {
+            t[n][target] =isPerfectSum(nums, target, n-1, t);
+        }
+        return t[n][target];
+    }
+}
