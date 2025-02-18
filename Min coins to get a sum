@@ -1,0 +1,65 @@
+Input: coins = [1,2,5], amount = 11
+Output: 3
+Explanation: 11 = 5 + 5 + 1
+
+This Java program solves the coin change problem using memoization (top-down dynamic programming). The goal is to find the minimum number of coins needed to make up a given amount.
+
+Key Components:
+coinChange(int[] coins, int amount)
+
+Initializes a memoization table t[n+1][amount+1] with -1 (indicating uncomputed values).
+Calls the recursive helper function isCoinChangePossible().
+If the result is Integer.MAX_VALUE - 1, it means no valid solution exists, so return -1; otherwise, return the computed value.
+isCoinChangePossible(int[] coins, int n, int amount, int[][] t)
+
+Base Cases:
+If amount == 0, return 0 (no coins needed).
+If n == 0, return Integer.MAX_VALUE - 1 (impossible case).
+Memoization Check:
+If t[n][amount] is already computed (!= -1), return it.
+Recursive Cases:
+If the current coin (coins[n-1]) is less than or equal to amount, we have two choices:
+Include the coin (+1 to count) and reduce the amount.
+Exclude the coin and move to the next.
+Take the minimum of both.
+If the coin is greater than the amount, skip it.
+Time Complexity:
+O(n × amount) due to memoization, reducing repeated calculations.
+Space Complexity:
+O(n × amount) for storing results in t[][].
+
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int n = coins.length;
+        int [][]t = new int[n+1][amount+1];
+       for(int i = 0; i <= n; i++) {
+            for(int j = 0; j <= amount; j++) {
+                t[i][j] = -1;
+            }
+        }
+        int minCoins = isCoinChangePossible(coins, n, amount,t);
+        return (minCoins == Integer.MAX_VALUE - 1) ? -1 : minCoins;
+    }
+
+    public int isCoinChangePossible(int[] coins, int n, int amount, int[][] t) {
+       
+        if(amount == 0) 
+        {
+            return 0;
+        }
+        if(n == 0) {
+            return Integer.MAX_VALUE - 1;
+        }
+        if(t[n][amount] != -1) {
+            return t[n][amount];
+        }     
+
+        if(coins[n-1] <= amount) {
+            t[n][amount] = Math.min(isCoinChangePossible(coins, n, amount - coins[n-1], t) + 1,
+            isCoinChangePossible(coins, n-1, amount, t));
+        } else {
+            t[n][amount] = isCoinChangePossible(coins, n-1, amount, t);
+        }
+        return t[n][amount];
+    }
+}
