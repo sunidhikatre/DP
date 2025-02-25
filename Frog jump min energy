@@ -1,0 +1,38 @@
+Here’s a 5-line summary with more focus on recursion logic:
+
+The function calculateCost(n, height, dp) recursively computes the minimum cost to reach stone n.
+The base case (if n == 0) returns 0 since the frog starts from the first stone.
+If the result for n is already computed (dp[n] != -1), it is returned to avoid redundant calculations (memoization).
+The recursion explores two options: jumping from n-1 (1 step) and n-2 (2 steps), calculating costs for both.
+The minimum of the two costs is stored in dp[n] and returned, ensuring optimal jumps with memoization.
+
+class Solution {
+    int minCost(int[] height) {
+        int n = height.length;
+        int[] dp = new int[n];
+        for(int i=0; i < dp.length; i++) {
+            dp[i] = -1;
+        }
+        int minCost = calculateCost(n - 1, height, dp);
+        return minCost;
+    }
+    
+    public int calculateCost(int n, int[] height, int[] dp) {
+        if(n == 0) {
+            return 0;
+        }
+        if(dp[n] != -1) {
+            return dp[n];
+        }
+        int left = calculateCost(n - 1, height, dp) + Math.abs(height[n] - height[n-1]);
+        
+        int right = Integer.MAX_VALUE;
+        if(n > 1)
+        {
+             right = calculateCost(n - 2, height, dp) + Math.abs(height[n] - height[n-2]);
+        }
+        
+        dp[n] = Math.min(left, right); 
+        return dp[n];
+    }
+}
