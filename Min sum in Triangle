@@ -1,0 +1,31 @@
+class Solution {
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int m = triangle.size();
+        int n = triangle.get(m-1).size();
+        int[][] dp = new int[m][n];
+
+        for(int i=0; i<m; i++) {
+            for(int j=0; j<n; j++) {
+                dp[i][j] = -1;
+             }
+        }
+        return minTotal(triangle, 0, 0, m, n, dp);
+    }
+
+    private int minTotal(List<List<Integer>> triangle, int i, int j, int m, int n, int[][] dp) {
+//Main is base cindition where we check if row is actually last row
+        if(i  == m-1) {
+           return triangle.get(i).get(j);
+        }
+
+        if(dp[i][j] != -1) {
+            return dp[i][j];
+        }
+
+        int down = triangle.get(i).get(j) + minTotal(triangle, i + 1, j, m, n, dp);
+        int diag = triangle.get(i).get(j) + minTotal(triangle, i + 1, j + 1, m, n, dp);
+
+        dp[i][j] = Math.min(down, diag);
+        return dp[i][j];
+    }
+}
