@@ -1,0 +1,38 @@
+1️⃣ Base Case: If either string is empty (m == 0 || n == 0), return 0.
+2️⃣ If Characters Match: Add 1 and recursively call for (m-1, n-1).
+3️⃣ If Characters Don't Match: Take the max of excluding one character from either string ((m, n-1) or (m-1, n)).
+
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length();
+        int n = text2.length();
+        int[][] t= new int[m+1][n+1];
+
+        for(int i = 0; i <= m; i++) {
+            for(int j = 0; j <= n; j++) {
+                t[i][j] = -1;
+            }
+        }
+
+        return longestCommonSubseq(text1, text2, m, n, t);
+    }
+
+    private int longestCommonSubseq(String s1, String s2, int m, int n, int[][] t) {
+
+        if(m == 0 || n == 0) {
+            return 0;
+        }
+
+        if(t[m][n] != -1) {
+            return t[m][n];
+        }
+
+        if(s1.charAt(m -1 ) == s2.charAt(n-1)) {
+            t[m][n] = longestCommonSubseq(s1, s2, m - 1, n -1, t) + 1;
+        } else {
+            t[m][n] = Math.max(longestCommonSubseq(s1, s2, m, n-1, t), longestCommonSubseq(s1, s2, m-1, n, t));
+        }
+
+        return t[m][n];
+    }
+}
