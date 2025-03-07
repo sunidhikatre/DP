@@ -1,0 +1,11 @@
+Eg str1 = "heap", str2 = "pea"
+O/P : 1 deletion & 2 insertions
+why : Deleting 'h' from 'heap' gives us 'eap' and now deleting 'p' from 'eap' gives us 'ea'
+Now inserting 'p' gives us string 2 i.e 'pea'
+Approach: Observe carefully that their LCS i.e longest common subsequence of the 2 strings remain same and We need to delete some characters from string 1 to reduce it to LCS and then adding some characters to LCS to convert to string 2
+str1 = "heap", str2 = "pea"
+image
+So :
+
+minimum number of deletions = str1.length – LCS
+minimum number of Insertions minInsert = str2.length – LCS
