@@ -1,0 +1,78 @@
+Input: prices = [7,1,5,3,6,4]
+Output: 7
+Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
+
+Base Cases:
+
+If ind==n, it means we have finished trading on all days, and there is no more money that we can get, therefore we simply return 0.
+Steps to memoize a recursive solution:
+
+If we draw the recursion tree, we will see that there are overlapping subproblems. In order to convert a recursive solution the following steps will be taken:
+
+Create a dp array of size [n][2]. The size of the input array is ‘n’, so the index will always lie between ‘0’ and ‘n-1’. The ‘buy’  variable can take only two values: 0 and 1. Therefore we take the dp array as dp[n][2]
+We initialize the dp array to -1.
+Whenever we want to find the answer to particular parameters (say f(ind, buy)), we first check whether the answer is already calculated using the dp array(i.e dp[ind][buy]!= -1 ). If yes, simply return the value from the dp array.
+If not, then we are finding the answer for the given value for the first time, we will use the recursive relation as usual but before returning from the function, we will set dp[ind][buy] to the solution we get.
+
+Case 1: When buy == 0, we can buy the stock.
+
+If we can buy the stock on a particular day, we have two options:
+
+Option 1: To do no transaction and move to the next day. In this case, the net profit earned will be 0 from the current transaction, and to calculate the maximum profit 
+starting from the next day, we will recursively call f(ind+1,0). As we have not bought the stock, the ‘buy’ variable value will still remain 0, indicating that we can buy the stock the next day.
+Option 2: The other option is to buy the stock on the current day. In this case, the net profit earned from the current transaction will be -Arr[i]. As we are buying the stock, 
+we are giving money out of our pocket, therefore the profit we earn is negative. To calculate the maximum profit starting from the next day, we will recursively call f(ind+1,1). As we have bought the stock, the ‘buy’ variable value will change to 1, indicating that we can’t buy and only sell the stock the next day.
+Case 2: When buy == 1, we can sell the stock.
+
+If we can buy the stock on a particular day, we have two options:
+
+Option 1: To do no transaction and move to the next day. In this case, the net profit earned will be 0 from the current transaction,
+and to calculate the maximum profit starting from the next day, we will recursively call f(ind+1,1). As we have not bought the stock, the ‘buy’ variable value will still remain at 1, indicating that we can’t buy and only sell the stock the next day.
+Option 2: The other option is to sell the stock on the current day. In this case, the net profit earned from the current transaction will be +Arr[i].
+As we are selling the stock, we are putting the money into our pocket, therefore the profit we earn is positive. To calculate the maximum profit starting from the next day, we will recursively call f(ind+1,0). 
+As we have sold the stock, the ‘buy’ variable value will change to 0, indicating that we can buy the stock the next day.
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int[][] dp = new int[n][2];
+
+        if(n==0) {
+            return 0;
+        }
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < 2; j++) {
+                dp[i][j] = -1;
+            }
+        }
+
+        return maxProfitUtil(prices, 0, 0, n, dp);
+    }
+
+    private int maxProfitUtil(int[] prices, int index, int buy, int n, int[][] t) {
+        if(index == n) {
+            return 0;
+        }
+
+        if(t[index][buy] != -1) {
+            return t[index][buy];
+        }
+
+        int profit = 0;
+
+        if(buy == 0) {
+            t[index][buy] = Math.max(0 + maxProfitUtil(prices, index + 1, 0, n, t),
+                                -prices[index] + maxProfitUtil(prices, index + 1, 1, n, t));
+        }
+
+        if(buy == 1) {
+            t[index][buy] = Math.max(0 + maxProfitUtil(prices, index + 1, 1, n, t),
+                                prices[index] + maxProfitUtil(prices, index + 1, 0, n, t));
+        }
+
+        return t[index][buy];
+    }
+}
