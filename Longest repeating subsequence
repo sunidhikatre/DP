@@ -1,0 +1,38 @@
+This problem is a variation of Longest Common Subsequence (LCS).
+Instead of comparing two different strings, we compare the same string with itself, ensuring that matching characters are at different indices.
+
+class Solution {
+    public int LongestRepeatingSubsequence(String s) {
+        String s1 = s;
+        String s2 = new String(s1);
+        int m = s1.length();
+        int n = s2.length();
+        
+        int[][]dp = new int[m+1][n+1];
+        for(int i = 0; i <= m; i++) {
+            for(int j = 0; j <= n; j++) {
+                dp[i][j] = -1;
+            }
+        }
+        return longestSubseq(s1, s2, m, n, dp);
+    }
+    
+    private int longestSubseq(String s1, String s2, int m, int n, int[][] dp) {
+        if(m ==0 || n == 0) {
+            return 0;
+        }
+        
+        if(dp[m][n] != -1) {
+            return dp[m][n];
+        }
+        
+        if(s1.charAt(m -1) == s2.charAt(n-1) && m != n) {
+            dp[m][n] = 1 + longestSubseq(s1, s2, m-1, n-1, dp);
+        } else {
+            dp[m][n] = Math.max(longestSubseq(s1, s2, m-1, n, dp),  
+                        longestSubseq(s1, s2, m, n-1, dp));
+        }
+        
+        return dp[m][n];
+    }
+}
