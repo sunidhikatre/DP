@@ -1,0 +1,95 @@
+Why is the formula m + n - LCS?
+𝑚
++
+𝑛
+m+n represents the total length if we simply concatenated both strings without considering common characters.
+The LCS represents the common characters that appear in both strings without needing duplication.
+To avoid counting these common characters twice, we subtract LCS length from m + n.
+Example
+Input:
+plaintext
+Copy
+Edit
+s1 = "abcde"
+s2 = "ace"
+Step 1: Find LCS
+LCS of "abcde" and "ace" is "ace" (length = 3).
+Step 2: Apply the Formula
+SCS Length
+=
+5
++
+3
+−
+3
+=
+5
+SCS Length=5+3−3=5
+SCS String Example: "abcde" (since it already contains "ace" as a subsequence).
+
+
+//{ Driver Code Starts
+// Initial Template for Java
+
+/*package whatever //do not write package name here */
+
+import java.io.*;
+import java.util.*;
+
+class GFG {
+    public static void main(String[] args) {
+
+        // taking input using Scanner class
+        Scanner sc = new Scanner(System.in);
+
+        // taking total testcases
+        int t = sc.nextInt();
+
+        sc.nextLine();
+        while (t-- > 0) {
+            // taking String X and Y
+            String X = sc.nextLine();
+            String Y = sc.nextLine();
+
+            // calling function shortestCommonSupersequence()
+            System.out.println(new Solution().shortestCommonSupersequence(X, Y));
+        }
+    }
+}
+// } Driver Code Ends
+
+
+// User function Template for Java
+
+class Solution {
+    // Function to find length of shortest common supersequence of two strings.
+    public static int shortestCommonSupersequence(String s1, String s2) {
+        int m = s1.length();
+        int n = s2.length();
+        int[][] dp = new int[m+1][n+1];
+      
+       
+        return m + n - (lcsLength(s1, s2, m, n, dp));
+    }
+    
+    private static int lcsLength(String s1, String s2, int m, int n, int[][] dp) {
+        
+        for(int i=0; i<=m ;i++) {
+            dp[i][0] = 0;
+        }
+        for(int j=0; j<=n ; j++) {
+            dp[0][j] = 0;
+        }
+        
+        for(int i = 1; i <= m; i++) {
+            for(int j = 1; j <= n; j++) {
+                if(s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dp[i][j] = 1 + dp[i-1][j-1];
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+            } 
+        }
+        return dp[m][n];
+    }
+}
