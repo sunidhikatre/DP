@@ -1,0 +1,42 @@
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        if(n == 0) {
+            return 0;
+        }
+        int[][][] t = new int[n][2][3];
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < 2; j++) {
+                for(int k=0; k<3; k++) {
+                     t[i][j][k] = -1;
+                }
+               
+            }
+        }
+
+
+        return getProfit(prices, n, 0, 0, t, 2);
+    }
+
+    private int getProfit(int[] prices, int n, int index, int buy, int[][][] t, int cap) {
+        if(index == n || cap ==0) {
+            return 0;
+        }
+        
+        if(t[index][buy][cap] != -1) {
+            return t[index][buy][cap];
+        }
+
+        if(buy == 0) {
+            t[index][buy][cap] = Math.max(0 + getProfit(prices, n, index + 1, 0, t, cap),
+             -prices[index] + getProfit(prices, n, index + 1, 1, t, cap));
+        }
+
+        if(buy == 1) {
+            t[index][buy][cap] = Math.max(0 + getProfit(prices, n, index + 1, 1, t, cap), 
+            prices[index] + getProfit(prices, n, index + 1, 0, t, cap - 1));
+        }
+
+        return t[index][buy][cap];
+    }
+}
