@@ -1,0 +1,49 @@
+We are given an array Arr[] of length n. It represents the price of a stock on ‘n’ days. The following guidelines need to be followed:
+
+We can buy and sell the stock any number of times.
+In order to sell the stock, we need to first buy it on the same or any previous day.
+We can’t buy a stock again after buying it once. In other words, we first buy a stock and then sell it. After selling we can buy and sell again. But we can’t sell before buying and can’t buy before selling any previously bought stock.
+We can’t buy a stock on the very next day of selling it. This is the cooldown clause.
+So while sellling we do index+2
+
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int[][] t = new int[n][2];
+
+        if(n == 0) {
+            return 0;
+        }
+
+        for(int i=0; i <n; i++) {
+            for(int j=0; j<2; j++) {
+                t[i][j] = -1;
+            }
+        }
+
+        return maxProfitWithCool(prices, 0, 0, n, t);
+    }
+
+    private int maxProfitWithCool(int[] prices, int index, int buy, int n, int[][] t) {
+        if(index >= n) {
+            return 0;
+        }
+
+        if(t[index][buy] != -1) {
+            return t[index][buy];
+        }
+
+        if(buy == 0) {
+            t[index][buy] = Math.max(0 + maxProfitWithCool(prices, index + 1, 0, n, t),
+                                -prices[index] + maxProfitWithCool(prices, index + 1, 1, n, t));
+        }
+
+        if(buy == 1) {
+             t[index][buy] = Math.max(0 + maxProfitWithCool(prices, index + 1, 1, n, t),
+                                prices[index] + maxProfitWithCool(prices, index + 2, 0, n, t));
+        }
+
+        return t[index][buy];
+    }
+}
