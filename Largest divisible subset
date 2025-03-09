@@ -1,0 +1,56 @@
+Sorting:
+
+Since a % b == 0 means a should be greater than b, sorting ensures that every number is only checked against smaller numbers.
+Dynamic Programming (lds[] array):
+
+lds[i] stores the length of the largest divisible subset ending at index i.
+We iterate over all pairs (j, i), updating lds[i] if nums[i] is divisible by nums[j] and extends the previous sequence.
+Backtracking (prev[] array):
+
+prev[i] stores the index of the previous number in the subset for reconstruction.
+We trace back from maxIndex (the index where the largest subset ends) to collect the numbers.
+Reversing the result:
+
+Since we build the subset from the last element back to the first, we reverse it to maintain order.
+
+
+class Solution {
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        int n = nums.length;
+        int[] lds = new int[n];
+        int[] prev = new int[n];
+         for (int i = 0; i < n; i++) {
+            lds[i] = 1;
+            prev[i] = -1;
+         }
+            
+        Arrays.sort(nums);
+
+
+        int maxSize = 1;
+        int maxIndex = 0;
+
+        for(int i =  0; i < n; i++) {
+            for(int j = 0; j < i; j++) {
+                if(nums[i] % nums[j] == 0 && lds[i] < lds[j] + 1) {
+                    lds[i] = lds[j] + 1;
+                    prev[i] = j;
+                }
+            }
+            if(lds[i] > maxSize) {
+                maxSize= lds[i];
+                maxIndex = i;
+            }
+        }
+
+        List<Integer> res = new ArrayList<>();
+
+        while(maxIndex != -1) {
+            res.add(nums[maxIndex]);
+            maxIndex = prev[maxIndex];
+        }
+
+        Collections.sort(res);
+        return res;
+    }
+}
