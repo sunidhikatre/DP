@@ -1,3 +1,11 @@
+A frog is trying to reach the last stone (stone n - 1) from the first stone (stone 0).
+There are n stones, and the height of each stone is given in the array height[] of length n.
+
+The frog can jump either 1 step or 2 steps at a time.
+The cost of a jump from stone i to stone j is abs(height[i] - height[j]).
+
+Your task is to compute the minimum total cost to reach the last stone.
+
 Here’s a 5-line summary with more focus on recursion logic:
 
 The function calculateCost(n, height, dp) recursively computes the minimum cost to reach stone n.
